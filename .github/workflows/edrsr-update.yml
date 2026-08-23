@@ -2,8 +2,11 @@ name: Оновлення бази справ Київводоканалу
 
 on:
   schedule:
-    - cron: "0 4 * * *"   # щодня о 04:00 UTC (06:00/07:00 за Києвом)
-  workflow_dispatch: {}    # можливість запустити вручну кнопкою в GitHub
+    - cron: "0 4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -15,11 +18,19 @@ jobs:
         with:
           python-version: "3.11"
 
-      - run: pip install -r requirements.txt
+      - run: pip install requests
 
-      - run: python fetch_cases.py
+      - name: Запустити скрипт
+        run: python fetch_cases.py
         env:
           EDRSR_ZIP_URL: ${{ secrets.EDRSR_ZIP_URL }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          RAW_DEBUG: "1"   # прибрати після першого успішного калібрування
+        continue-on-error: true
+
+      - name: Зберегти лог і результат у репозиторій
+        if: always()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add cases.json log.txt || true
+          git diff --staged --quiet || git commit -m "Оновлення бази справ"
+          git push
