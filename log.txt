@@ -1,24 +1,18 @@
 Старт. ZIP_URL заданий: так
-ZIP_URL (перші 60 символів): https://data.gov.ua/dataset/ediniy-derzhavniy-reestr-sudovih
+ZIP_URL (перші 60 символів): https://data.gov.ua/dataset/16ab7f06-7414-405f-8354-0a492475
 Завантажую архів...
+Файлів у архіві: 0
+---- ПРИКЛАД СИРОГО XML (перший запис у архіві) ----
 
----- ПОМИЛКА ----
-Traceback (most recent call last):
-  File "/home/runner/work/Casesearcher/Casesearcher/fetch_cases.py", line 98, in <module>
-    main()
-  File "/home/runner/work/Casesearcher/Casesearcher/fetch_cases.py", line 63, in main
-    archive = download_archive(ZIP_URL)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/Casesearcher/Casesearcher/fetch_cases.py", line 18, in download_archive
-    return zipfile.ZipFile(io.BytesIO(resp.content))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/zipfile/__init__.py", line 1365, in __init__
-    self._RealGetContents()
-  File "/usr/lib/python3.12/zipfile/__init__.py", line 1432, in _RealGetContents
-    raise BadZipFile("File is not a zip file")
-zipfile.BadZipFile: File is not a zip file
+-----------------------------------------------------
+Нових знайдено: 0
+Всього в базі: 0
 Старт. ZIP_URL заданий: так
-ZIP_URL (перші 60 символів): https://data.gov.ua/dataset/ediniy-derzhavniy-reestr-sudovih
+ZIP_URL (перші 60 символів): https://data.gov.ua/dataset/16ab7f06-7414-405f-8354-0a492475
 Завантажую архів...
-Сталася помилка, деталі в log.txt
-fatal: pathspec 'cases.json' did not match any files
+Файлів у архіві: 0
+---- ПРИКЛАД СИРОГО XML (перший запис у архіві) ----
+
+-----------------------------------------------------
+Нових знайдено: 0
+Всього в базі: 0
