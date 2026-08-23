@@ -1,1 +1,8 @@
-Цивільних, Київ, категорії боргу за послуги: 2248
+Запуск: Sun Aug 23 08:05:02 UTC 2026
+Python 3.12.3
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: requests in /usr/lib/python3/dist-packages (2.31.0)
+Traceback (most recent call last):
+  File "/home/runner/work/Casesearcher/Casesearcher/fetch_cases.py", line 2, in <module>
+    from striprtf.striprtf import rtf_to_text
+ModuleNotFoundError: No module named 'striprtf'
