@@ -16,7 +16,7 @@ jobs:
         run: |
           echo "Запуск: $(date)" > log.txt
           python3 --version >> log.txt 2>&1
-          pip3 install requests >> log.txt 2>&1
+          pip3 install requests striprtf >> log.txt 2>&1
 
       - name: Запустити скрипт
         run: python3 fetch_cases.py >> log.txt 2>&1
