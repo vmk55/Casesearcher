@@ -1,4 +1,8 @@
-Запуск: Sun Aug 23 06:48:22 UTC 2026
-Python 3.12.3
-Defaulting to user installation because normal site-packages is not writeable
-Requirement already satisfied: requests in /usr/lib/python3/dist-packages (2.31.0)
+Всього: 7
+instances.csv
+regions.csv
+courts.csv
+justice_kinds.csv
+judgment_forms.csv
+cause_categories.csv
+documents.csv
