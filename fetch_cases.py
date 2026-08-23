@@ -1,12 +1,11 @@
-import os, io, zipfile, requests
+import os, io, json, zipfile, requests
 import xml.etree.ElementTree as ET
 
 ZIP_URL = os.environ["EDRSR_ZIP_URL"]
-SUPABASE_URL = os.environ["SUPABASE_URL"]
-SUPABASE_KEY = os.environ["SUPABASE_KEY"]
 PARTY_KEYWORD = "київводоканал"
 PROCEEDING_FILTER = "цивільне"
 RAW_DEBUG = os.environ.get("RAW_DEBUG", "0") == "1"
+OUTPUT_FILE = "cases.json"
 
 def download_archive(url):
     resp = requests.get(url, timeout=600, stream=True)
@@ -44,21 +43,17 @@ def parse_record(xml_bytes):
             "doc_type": doc_type, "decision_date": date, "plaintiff": plaintiff,
             "defendant": defendant, "snippet": snippet}
 
-def upload_to_supabase(records):
-    if not records:
-        return
-    url = f"{SUPABASE_URL}/rest/v1/cases"
-    headers = {"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}",
-               "Content-Type": "application/json", "Prefer": "resolution=merge-duplicates"}
-    resp = requests.post(url, headers=headers, json=records, timeout=60)
-    print(f"Supabase: {resp.status_code}, {len(records)} записів")
-    if resp.status_code >= 400:
-        print(resp.text[:1000])
-
 def main():
     archive = download_archive(ZIP_URL)
     names = [n for n in archive.namelist() if n.lower().endswith(".xml")]
     print(f"Файлів у архіві: {len(names)}")
+
+    existing = []
+    if os.path.exists(OUTPUT_FILE):
+        with open(OUTPUT_FILE, encoding="utf-8") as f:
+            existing = json.load(f)
+    known_numbers = {r["case_no"] for r in existing}
+
     matched = []
     for name in names:
         with archive.open(name) as f:
@@ -67,11 +62,15 @@ def main():
             record = parse_record(raw)
         except ET.ParseError:
             continue
-        if record and record["case_no"]:
+        if record and record["case_no"] and record["case_no"] not in known_numbers:
             matched.append(record)
-    print(f"Знайдено: {len(matched)}")
-    for i in range(0, len(matched), 200):
-        upload_to_supabase(matched[i:i+200])
+            known_numbers.add(record["case_no"])
+
+    print(f"Нових знайдено: {len(matched)}")
+    all_records = existing + matched
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(all_records, f, ensure_ascii=False, indent=2)
+    print(f"Всього в базі: {len(all_records)}")
 
 if __name__ == "__main__":
     main()
