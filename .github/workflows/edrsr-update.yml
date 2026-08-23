@@ -1,8 +1,6 @@
 name: Оновлення бази справ Київводоканалу
 
 on:
-  schedule:
-    - cron: "0 4 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -14,23 +12,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - run: pip install requests
+      - name: Підготовка
+        run: |
+          echo "Запуск: $(date)" > log.txt
+          python3 --version >> log.txt 2>&1
+          pip3 install requests >> log.txt 2>&1
 
       - name: Запустити скрипт
-        run: python fetch_cases.py
+        run: python3 fetch_cases.py >> log.txt 2>&1
+        continue-on-error: true
         env:
           EDRSR_ZIP_URL: ${{ secrets.EDRSR_ZIP_URL }}
-        continue-on-error: true
 
-      - name: Зберегти лог і результат у репозиторій
+      - name: Зберегти лог і результат
         if: always()
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add cases.json log.txt || true
-          git diff --staged --quiet || git commit -m "Оновлення бази справ"
-          git push
+          git add cases.json 2>>log.txt || true
+          git add log.txt
+          git commit -m "log $(date +%s)" || echo "nothing to commit"
+          git push || echo "push failed"
